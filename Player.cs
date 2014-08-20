@@ -39,11 +39,11 @@ namespace OldSkoolShmup
 
             if (FlxG.keys.LEFT)
             {
-                velocity.X -= 100;
+                velocity.X -= 200;
             }
             if (FlxG.keys.RIGHT)
             {
-                velocity.X += 100;
+                velocity.X += 200;
             }
 
             //right bound
@@ -58,7 +58,7 @@ namespace OldSkoolShmup
             {
                 m_bullet = bullets[bulletIndex];
                 m_bullet.reset(x + ((width / 2) - m_bullet.width), y);
-                m_bullet.velocity.Y = -150;
+                m_bullet.velocity.Y = -300;
                 bulletIndex++;
                 if (bulletIndex >= bullets.length)
                     bulletIndex = 0;
