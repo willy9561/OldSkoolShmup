@@ -1,20 +1,11 @@
-﻿using System;
-using System.Net;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Documents;
-using System.Windows.Ink;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Animation;
-using System.Windows.Shapes;
-using org.flixel;
+﻿using org.flixel;
 
 namespace OldSkoolShmup
 {
     public class PlayState : FlxState
     {
         private const uint maxBufSize = 256;
+        private const int maxLevelLimit = 20;
         private byte[] EnemyFireBuf = new byte[maxBufSize];
         private byte[] EnemyMoveBuf = new byte[maxBufSize];
         private byte[] EnemyUpdateBuf = new byte[maxBufSize];
@@ -31,8 +22,6 @@ namespace OldSkoolShmup
         private int m_Pattern;
         private int k;
         private double count;
-        private int mHighWaterMark;
-        private int mLowWaterMark;
 
         private byte enemyMoveBufPut;
         private byte enemyMoveBufGet;
@@ -52,11 +41,6 @@ namespace OldSkoolShmup
         private byte indexFireA;
         private Enemy _mEnemyFireA;
 
-        private byte enemyStratBufPut;
-        private byte enemyStratBufGet;
-        private byte enemyStratBufCnt;
-        private byte indexStratA;
-        private Enemy _mEnemyStratA;
 
         public PlayState()
         {
@@ -88,15 +72,6 @@ namespace OldSkoolShmup
             _mEnemyUpdateA = null;
             indexUpdateA = 0;
 
-            //Strategic Buffer
-            enemyStratBufPut = 0;
-            enemyStratBufGet = 0;
-            enemyStratBufCnt = 0;
-            _mEnemyStratA = null;
-            indexStratA = 0;
-
-            mHighWaterMark = 40;
-            mLowWaterMark = 20;
 
             _bullets = new FlxArray<Bullet>();
             for (int i = 0; i < 8; i++)
@@ -106,7 +81,17 @@ namespace OldSkoolShmup
             this.add(_player);
 
             _Enemies = new FlxArray<Enemy>();
-            for (int i = 0; i < 10; i++)
+
+            int levelLimit = 10 * (FlxG.level +1);
+
+            if (levelLimit > maxLevelLimit)
+                levelLimit = maxLevelLimit;
+
+            int HorizontalScreenWidth = FlxG.width;
+            int TopRowOffset = 20;
+            int EnemySpriteWidth = 32;
+
+            for (int i = 0; i < levelLimit; i++)
             {
                 if (i > 5)
                     m_Pattern = 1;
@@ -115,10 +100,10 @@ namespace OldSkoolShmup
                 for (int j = 0; j < 8; j++)
                     _enemyBullets.add(this.add(new Bullet()) as Bullet);
 
-                if (i < 9)
-                    _Enemies.add(this.add(new Alien1(((FlxG.width) - 32 * (i+1)), (20), i, m_Stage, m_Pattern,  _enemyBullets)) as Enemy);
-                if (i == 9)
-                    _Enemies.add(this.add(new Alien2(((FlxG.width) - 32 * (i + 1)), (20), i, m_Stage, m_Pattern, _enemyBullets)) as Enemy);
+                if (i < 10)
+                    _Enemies.add(this.add(new Alien1((HorizontalScreenWidth - EnemySpriteWidth * (i + 1)), TopRowOffset, i, m_Stage, m_Pattern, _enemyBullets)) as Enemy);
+                if (i >= 10)
+                    _Enemies.add(this.add(new Alien1((HorizontalScreenWidth - EnemySpriteWidth * ((i + 1) - 10)), (TopRowOffset * 2), i, m_Stage, m_Pattern, _enemyBullets)) as Enemy);
 
                 _Enemies[i].setUpdateRequest(this);
             }
@@ -134,7 +119,6 @@ namespace OldSkoolShmup
 
             for (int i = 0; i < _Enemies.length; i++)
             {
-                //TODO: need a faster way than this loop
                 FlxG.overlapArray(_Enemies[i].Bullets, _player, bulletHitAlien);
             }
 
@@ -143,8 +127,6 @@ namespace OldSkoolShmup
             {
                 indexMoveA = getBufferMoveEnemy();
                 _mEnemyMoveA = _Enemies[indexMoveA];
-                //TODO: add code to move with intelligence
-                //BoyLib::Vector2 direction = CalcEnemyMove(_mEnemyMoveA);
                 _mEnemyMoveA.move();
             }
             else
