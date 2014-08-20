@@ -1,14 +1,4 @@
-﻿using System;
-using System.Net;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Documents;
-using System.Windows.Ink;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Animation;
-using System.Windows.Shapes;
-using org.flixel;
+﻿using org.flixel;
 
 namespace OldSkoolShmup 
 {
@@ -48,8 +38,8 @@ namespace OldSkoolShmup
             
             m_halfwidth = width / 2;
             m_halfheight = height / 2;
-            maxVelocity.Y = 200;
-            maxVelocity.X = 200;
+            maxVelocity.Y = 300;
+            maxVelocity.X = 300;
 
             _mMoveTimerExpired = false;
             _mFireTimerExpired = false;
@@ -79,7 +69,7 @@ namespace OldSkoolShmup
             {
                 m_bullet = bullets[bulletIndex];
                 m_bullet.reset(x + ((width / 2) - m_bullet.width), y);
-                m_bullet.velocity.Y = 150;
+                m_bullet.velocity.Y = 300;
                 bulletIndex++;
                 if (bulletIndex >= bullets.length)
                     bulletIndex = 0;
@@ -156,39 +146,39 @@ namespace OldSkoolShmup
                 {
                     if (m_pattern == 1)
                     {
-                        velocity.Y += 2;
-                        velocity.X += 1;
+                        velocity.Y += 20;
+                        velocity.X += 11;
                     }
                     else
                     {
-                        velocity.Y += 2;
-                        velocity.X -= 1;
+                        velocity.Y += 20;
+                        velocity.X -= 10;
                     }
                 }
                 else if (m_step < 15)
                 {
                     if (m_pattern == 1)
                     {
-                        velocity.Y += 1;
-                        velocity.X += 1;
+                        velocity.Y += 10;
+                        velocity.X += 10;
                     }
                     else
                     {
-                        velocity.Y += 1;
-                        velocity.X -= 1;
+                        velocity.Y += 10;
+                        velocity.X -= 10;
                     }
                 }
                 else if (m_step < 20)
                 {
                     if (m_pattern == 1)
                     {
-                        velocity.Y -= 1;
-                        velocity.X -= 2;
+                        velocity.Y -= 10;
+                        velocity.X -= 20;
                     }
                     else
                     {
-                        velocity.Y -= 1;
-                        velocity.X += 2;
+                        velocity.Y -= 10;
+                        velocity.X += 20;
                     }
                 }
                 else
